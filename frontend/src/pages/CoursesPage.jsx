@@ -18,6 +18,7 @@ const CoursesPage = () => {
   const [exploreCourses, setExploreCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [showEnrollPopup, setShowEnrollPopup] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -153,18 +154,30 @@ const CoursesPage = () => {
               >
                 Explore Courses
               </button>
+
+              {/* Search Bar */}
+              <div className="relative group max-w-xs w-60 hidden md:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-teal-300 transition-colors w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder={t("header.search_placeholder")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-black/30 border border-white/20 rounded-full text-sm text-white placeholder-white/50 focus:ring-2 focus:ring-teal-400/30 focus:border-teal-400 transition-all outline-none"
+                />
+              </div>
             </div>
 
             {/* ================= MY COURSES ================= */}
             {activeTab === "my-courses" && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {myCourses.length === 0 && (
                   <p className="text-slate-500">
                     You have not enrolled in any courses yet.
                   </p>
                 )}
 
-                {myCourses.map((course) => {
+                {myCourses.filter((course) => course.title.toLowerCase().includes(searchQuery.toLowerCase())).map((course) => {
                   const purchasedEntry = user?.purchasedCourses?.find(
                     (c) => Number(c.courseId) === Number(course.id)
                   );
@@ -184,8 +197,8 @@ const CoursesPage = () => {
                         className="h-40 w-full object-cover"
                       />
 
-                      <div className="p-6 space-y-4">
-                        <h3 className="text-lg font-semibold text-main">
+                      <div className="p-4 space-y-3">
+                        <h3 className="text-sm font-semibold text-main">
                           {course.title}
                         </h3>
 
@@ -211,6 +224,7 @@ const CoursesPage = () => {
                   .filter(
                     (course) => !myCourses.some((c) => c.id === course.id)
                   )
+                  .filter((course) => course.title.toLowerCase().includes(searchQuery.toLowerCase()))
                   .map((course) => (
                     <div
                       key={course.id}

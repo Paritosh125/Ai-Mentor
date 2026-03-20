@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import { Star, Bookmark, X } from "lucide-react";
+import { Star, Bookmark, X, Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSidebar } from "../context/SidebarContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import API_BASE_URL from "../lib/api";
-
+import { useTranslation } from "react-i18next";
 const CoursesPage = () => {
+  const { t } = useTranslation();
   const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } =
     useSidebar();
   const [activeTab, setActiveTab] = useState("my-courses");
@@ -132,8 +133,8 @@ const CoursesPage = () => {
               </p>
             </div>
 
-            {/* Tabs + Search */}
-            <div className="flex items-center justify-start gap-3">
+            {/* Tabs */}
+            <div className="bg-card rounded-xl p-2 inline-flex border border-border shadow-sm">
               <button
                 onClick={() => setActiveTab("my-courses")}
                 className={`px-6 py-2 rounded-lg font-semibold ${

@@ -345,22 +345,33 @@ const Dashboard = () => {
           <div className="max-w-7xl pt-16 mx-auto space-y-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {dynamicStatsCards.map((card, index) => (
-                <div
-                  key={index}
-                  className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300 cursor-pointer"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-3 rounded-xl ${card.iconBg}`}>
-                      {card.icon}
-                    </div>
-                    <div className="text-2xl font-bold text-main mb-1">
-                      {card.value}
-                    </div>
-                    <div className="text-sm text-muted">{card.label}</div>
-                  </div>
-                </div>
-              ))}
+            {dynamicStatsCards.map((card, index) => {
+  const statLabelKeys = ["ongoing_courses", "completed", "certificates", "hours_spent"];
+
+  return (
+    <div
+      key={index}
+      className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300 cursor-pointer"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className={`p-3 rounded-xl ${card.iconBg}`}>
+          {card.icon}
+        </div>
+        <span className="text-sm font-medium text-green-600">
+          {card.change}
+        </span>
+      </div>
+
+      <div className="text-2xl font-bold text-main mb-1">
+        {card.value}
+      </div>
+
+      <div className="text-sm text-muted">
+        {statLabelKeys[index]}
+      </div>
+    </div>
+  );
+})}
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -552,7 +563,7 @@ const Dashboard = () => {
                 ) : (
                   <div className="p-6  text-muted">
                     <p>Start Learning to get your progress tracked!</p>
-                    <button className="mt-4 px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-600"
+                    <button                      className="mt-4 px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-600"
                       onClick={() => navigate("/courses")}
                     >
                       My Courses

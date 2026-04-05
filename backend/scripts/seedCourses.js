@@ -33,7 +33,8 @@ const uploadImageToCloudinary = async (imagePath, courseId) => {
 
         const result = await cloudinary.uploader.upload(fullPath, {
             folder: "courses",
-            public_id: `courses/${Date.now()}-${courseId}`,
+            public_id: `course-${courseId}`,
+            overwrite: true,
         });
 
         return result.secure_url;

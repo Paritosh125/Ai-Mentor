@@ -1,7 +1,6 @@
 // frontend/src/pages/Settings.jsx
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useSidebar } from "../context/SidebarContext";
 import {
   User,
   Bell,

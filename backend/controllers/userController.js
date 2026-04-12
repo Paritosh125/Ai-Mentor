@@ -464,7 +464,7 @@ const removePurchasedCourse = async (req, res) => {
 };
 
  // Delete User-Account 
- const deleteAccount= async (req,res) => {
+const deleteAccount= async (req,res) => {
    try {
 
     const userId= req.user.id;
@@ -511,6 +511,103 @@ const removePurchasedCourse = async (req, res) => {
     res.status(500).json({message: "Failed to delete account"}); 
   } 
 }
+
+// @desc Admin: list all users
+// @route GET /api/admin/users
+// @access Private (admin/superAdmin user role)
+const listUsersForAdmin = async (_req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: [
+        "id",
+        "name",
+        "email",
+        "role",
+        "purchasedCourses",
+        "createdAt",
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    const payload = users.map((user) => {
+      const purchasedCourses = Array.isArray(user.purchasedCourses) ? user.purchasedCourses : [];
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        purchasedCourses,
+        purchasedCoursesCount: purchasedCourses.length,
+        createdAt: user.createdAt,
+      };
+    });
+
+    res.status(200).json(payload);
+  } catch (error) {
+    console.error("ADMIN LIST USERS ERROR:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc Admin: update user role
+// @route PUT /api/admin/users/:id/role
+// @access Private (admin/superAdmin user role)
+const updateUserRoleByAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    const allowedRoles = ["user", "admin", "superAdmin"];
+
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({ message: "Invalid role value" });
+    }
+
+    const targetUser = await User.findByPk(id);
+    if (!targetUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    targetUser.role = role;
+    await targetUser.save();
+
+    res.status(200).json({
+      id: targetUser.id,
+      name: targetUser.name,
+      email: targetUser.email,
+      role: targetUser.role,
+    });
+  } catch (error) {
+    console.error("ADMIN UPDATE ROLE ERROR:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc Admin: delete user account
+// @route DELETE /api/admin/users/:id
+// @access Private (admin/superAdmin user role)
+const deleteUserByAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (req.user?.id === id) {
+      return res.status(400).json({ message: "You cannot delete your own account from admin panel" });
+    }
+
+    const targetUser = await User.findByPk(id);
+    if (!targetUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await CommunityPost.destroy({ where: { userId: id } });
+    await Notifications.destroy({ where: { userId: id } });
+    await targetUser.destroy();
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("ADMIN DELETE USER ERROR:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 // EXPORTS
 export {
   registerUser,
@@ -524,5 +621,8 @@ export {
   updateUserProfile, // stub
   removePurchasedCourse,
   deleteAccount,
-  changePassword
+  changePassword,
+  listUsersForAdmin,
+  updateUserRoleByAdmin,
+  deleteUserByAdmin
 };

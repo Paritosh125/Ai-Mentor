@@ -5,7 +5,10 @@ import {
   getAdminProfile,
   deleteAdmin,
   logoutAdmin,
-  getAllEnrollments
+  getAllEnrollments,
+  getAllPayments,
+  getAllCourses,
+  getAllUsers
 } from "../controllers/adminController.js";
 import { protectAdmin, superAdminOnly } from "../middleware/adminAuthMiddleware.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
@@ -28,5 +31,9 @@ router.get("/enrollments", protect, admin, getAllEnrollments);
 router.get("/users", protect, admin, listUsersForAdmin);
 router.put("/users/:id/role", protect, admin, updateUserRoleByAdmin);
 router.delete("/users/:id", protect, admin, deleteUserByAdmin);
+router.get("/enrollments", protectAdmin, getAllEnrollments);
+router.get("/payments", protectAdmin, getAllPayments);
+router.get("/courses", protectAdmin, getAllCourses);
+router.get("/users", protectAdmin, getAllUsers);
 
 export default router;

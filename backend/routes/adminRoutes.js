@@ -16,7 +16,7 @@ import {
   getAllComplaints,
   updateComplaintStatus,
 } from "../controllers/adminController.js";
-import { getReports, moderateReport } from "../controllers/communityController.js";
+import { getAllComplaintsAndReports, moderateReport } from "../controllers/complaintController.js";
 import { addCourse, updateCourse, deleteCourse, addModules, addLessons, updateLessonVideo, addSubtopics } from "../controllers/courseController.js";
 import { protectAdmin, superAdminOnly, anyAdmin } from "../middleware/adminAuthMiddleware.js";
 
@@ -44,11 +44,10 @@ router.post("/courses/:courseId/modules/:moduleId/lessons", protectAdmin, anyAdm
 router.put("/courses/:courseId/lessons/:lessonId/video", protectAdmin, anyAdmin, updateLessonVideo);
 router.post("/courses/:courseId/subtopics", protectAdmin, anyAdmin, addSubtopics);
 
-router.get("/reports", protectAdmin, anyAdmin, getReports);
-router.put("/reports/:reportId", protectAdmin, anyAdmin, moderateReport);
-
-router.get("/complaints", protectAdmin, anyAdmin, getAllComplaints);
+// Unified complaints and reports endpoint
+router.get("/complaints", protectAdmin, anyAdmin, getAllComplaintsAndReports);
 router.put("/complaints/:id/status", protectAdmin, anyAdmin, updateComplaintStatus);
+router.put("/complaints/:id/moderate", protectAdmin, anyAdmin, moderateReport);
 
 router.post("/register", protectAdmin, superAdminOnly, registerAdmin);
 router.get("/admins", protectAdmin, superAdminOnly, getAllAdmins);

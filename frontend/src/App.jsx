@@ -55,6 +55,8 @@ const App = () => {
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
+          {/* Complete Profile Route */}
+          <Route path="/complete-profile" element={<CompleteProfilePage />} />
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/analytics" element={<Analytics />} />
